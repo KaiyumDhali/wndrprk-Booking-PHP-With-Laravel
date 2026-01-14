@@ -38,13 +38,12 @@
 <body style="font-size:12px">
     {{-- include header --}}
     @include('pages.pdf.partials.header_pdf')
-
     <div class="text-center">
         @if ($data['start_date'] == $data['end_date'])
-            <h5 class="pb-0 mb-0 pt-0 pdf_title">Daily Sales Register</h5>
+            <h5 class="pb-0 mb-0 pt-0 pdf_title">Daily Consume Register</h5>
             <p>{{ \Carbon\Carbon::parse($data['start_date'])->translatedFormat('d F Y') }}</p>
         @else
-            <h5 class="pb-0 mb-0 pt-0 pdf_title">Date Wise Sales Register</h5>
+            <h5 class="pb-0 mb-0 pt-0 pdf_title">Date Wise Consume Register</h5>
             <p>Form {{ \Carbon\Carbon::parse($data['start_date'])->translatedFormat('d F Y') }} to {{ \Carbon\Carbon::parse($data['end_date'])->translatedFormat('d F Y') }}</p>
         @endif
     </div>
@@ -57,12 +56,12 @@
         @if ($dateWiseSalesSearch)
             <thead class="text-light bg-secondary">
                 <tr class="text-uppercase text-center" style="font-size: 12px; font-weight: bold">
-                    <th scope="col" class="text-center align-middle" width="65px">Sales Date</th>
+                    <th scope="col" class="text-center align-middle" width="65px">Consume Date</th>
                     <th scope="col" class="text-center align-middle" width="60px">Invoice</th>
-                    <th scope="col" class="text-center align-middle" width="60px">Customer Name</th>
-                    <th scope="col" class="text-center align-middle" width="60px">Total Amount</th>
-                    <th scope="col" class="text-center align-middle" width="40px">Discount</th>
-                    <th scope="col" class="text-center align-middle" width="40px">Net Sales(BDT)</th>
+                    <th scope="col" class="text-center align-middle" width="60px">Employee Name</th>
+                    <th scope="col" class="text-center align-middle d-none" width="60px">Total Amount</th>
+                    <th scope="col" class="text-center align-middle d-none" width="40px">Discount</th>
+                    <th scope="col" class="text-center align-middle d-none" width="40px">Net Sales(BDT)</th>
             </thead>
             <tbody>
                 @php
@@ -84,15 +83,15 @@
                         <td>{{ $dateWiseSales->invoice_no }}</td>
                         <td>
                             <span
-                                style="font-size: 12px; font-style: italic; font-weight: bold">{{ $dateWiseSales->account_name }}</span>
+                                style="font-size: 12px; font-style: italic; font-weight: bold">{{ $dateWiseSales->employee_name }}</span>
                         </td>
-                        <td style="text-align: right;">
+                        <td class="d-none" style="text-align: right;">
                             {{ formatCurrency($salesAmount) }}
                         </td>
-                        <td style="text-align: right;">
+                        <td class="d-none" style="text-align: right;">
                             {{ formatCurrency($discount) }}
                         </td>
-                        <td style="text-align: right;">
+                        <td class="d-none" style="text-align: right;">
                             {{ formatCurrency($total_amount) }}
                         </td>
                     </tr>
@@ -103,7 +102,7 @@
                     @endphp
                 @endforeach
 
-                <tr>
+                <tr class="d-none">
                     <td colspan="3" style="font-weight: bold; text-align: right;">Total:</td>
                     <td style="font-weight: bold; text-align: right;">
                         @if (!empty($sum_total_amount))

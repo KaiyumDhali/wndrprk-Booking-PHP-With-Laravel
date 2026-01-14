@@ -41,7 +41,7 @@
                 <div class="card-header align-items-center py-2 gap-2 gap-md-5">
                     <!--begin::Card title-->
                     <div class="card-title">
-                        <h3>Finish Good Wise Stock Report</h3>
+                        <h3>Stock Report</h3>
                     </div>
                 </div>
                 <!--begin::Card body-->
@@ -68,11 +68,12 @@
                                 <select id="warehouseId" class="form-select form-select-sm" name="warehouse_id"
                                     data-control="select2" data-hide-search="false">
                                     <option selected value="0">ALL Warehouse</option>
-                                    @foreach ($warehouses as $warehouse)
-                                        <option value="{{ $warehouse->id }}">
+                                    @foreach ($warehouses as $index => $warehouse)
+                                        <option value="{{ $warehouse->id }}" {{ $loop->first ? 'selected' : '' }}>
                                             {{ $warehouse->name }}
                                         </option>
                                     @endforeach
+
                                 </select>
                             </div>
                         </div>

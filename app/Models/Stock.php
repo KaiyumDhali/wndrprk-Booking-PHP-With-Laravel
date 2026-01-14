@@ -58,6 +58,9 @@ class Stock extends Model
     public function customer_finance_account(){
         return $this->belongsTo(FinanceAccount::class, 'customer_id');
     }
+    public function employee_finance_account(){
+        return $this->belongsTo(Employee::class, 'customer_id');
+    }
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
     

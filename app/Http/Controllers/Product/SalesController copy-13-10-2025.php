@@ -9,7 +9,6 @@ use App\Models\Customer;
 use App\Models\Warehouse;
 use App\Models\Product;
 use App\Models\ProductUnit;
-use App\Models\Employee;
 use App\Models\Stock;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -250,11 +249,11 @@ class SalesController extends Controller
         $warehouses = Warehouse::where('status', 1)->get();
         $products = Product::where('is_saleable', 1)->where('status', 1)->get();
         $units = ProductUnit::get();
-        $customerAccounts = Employee::where('status', 1)->get();
-        // $customerAccounts = FinanceAccount::where('account_status', 1)->where('account_group_code', '100020001')->get();
+        $customers = Customer::where('status', 1)->get();
+        $customerAccounts = FinanceAccount::where('account_status', 1)->where('account_group_code', '100020001')->get();
         $toAccounts = FinanceAccount::where('account_status', 1)->where('account_group_code', '100020002')->get();
         $customerTypes = CustomerType::where('status', 1)->pluck('type_name', 'id')->all();
-        return view('pages.product.stock._stock-out', compact('products', 'warehouses', 'units', 'customerAccounts', 'toAccounts', 'customerTypes'));
+        return view('pages.product.stock._stock-out', compact('products', 'warehouses', 'units', 'customers', 'customerAccounts', 'toAccounts', 'customerTypes'));
     }
 
     // customerDetails ----------------------------------------------
@@ -283,7 +282,7 @@ class SalesController extends Controller
         }
     }
 
-       // Sales Store ----------------------------------------------
+    // Sales Store ----------------------------------------------
     public function store(Request $request)
     {
         // dd($request->all());
@@ -300,7 +299,7 @@ class SalesController extends Controller
         }
 
         $salesDate = $request->input('voucher_date');
-        $netTotalAmount = 0;
+        $netTotalAmount = $request->input('netTotalAmount');
         $givenAmount = $request->input('givenAmount');
         $remarks = $request->input('remarks');
         $done_by = Auth::user()->name;
@@ -359,30 +358,27 @@ class SalesController extends Controller
             foreach ($request->get('table_product_id') as $key => $productId) {
                 $stockOut = new Stock();
                 $stockQuantity = $request->input('table_product_quantity')[$key];
-                $stockPrice = 0;
-                $stockDiscount = 0;
-                $stockTotal = 0;
-                $warehouse_id = $request->input('table_warehouse_id')[$key];
+                $stockPrice = $request->input('table_product_price')[$key];
+                $stockDiscount = $request->input('table_product_discount')[$key];
+                $stockTotal = $request->input('table_product_cart_amount')[$key];
                 $product = Product::find($productId);
                 $productName = $product ? $product->product_name : 'Unknown Product';
 
                 // Only update the sales_price for the specific product if it's different
+                if ($product && $stockPrice != $product->sales_price) {
+                    DB::table('products')
+                        ->where('id', $product->id) // Target the specific product by ID
+                        ->update(['sales_price' => $stockPrice]);
+                }
 
-                // if ($product && $stockPrice != $product->sales_price) {
-                //     DB::table('products')
-                //         ->where('id', $product->id) // Target the specific product by ID
-                //         ->update(['sales_price' => $stockPrice]);
-                // }
-
-                // $stockOut->warehouse_id = $request->input('warehouse_id');
-                $stockOut->warehouse_id = $warehouse_id;
+                $stockOut->warehouse_id = $request->input('warehouse_id');
                 $stockOut->stock_date = $salesDate;
                 $stockOut->stock_type = 'Out';
                 $stockOut->delivery_challan_no = $deliveryChallanNumber;
                 $stockOut->invoice_no = $salesNumber;
                 $stockOut->customer_id = $customerId;
                 $stockOut->product_id = $request->input('table_product_id')[$key];
-                $stockOut->purchase_price = 0;
+                $stockOut->purchase_price = $request->input('table_purchase_price')[$key];
                 $stockOut->stock_in_quantity = 0;
                 $stockOut->stock_out_quantity = $stockQuantity;
                 $stockOut->stock_out_unit_price = $stockPrice;
@@ -493,9 +489,9 @@ class SalesController extends Controller
             }
             DB::commit();
         } catch (\Exception $e) {
-    DB::rollback();
-    return back()->withErrors(['error' => 'DB Error: ' . $e->getMessage()]);
-}
+            DB::rollback();
+            return back()->withErrors(['error' => 'Ops ! Could Not add Sales history. DB transaction lost']);
+        }
         return back()->with([
             'message' => 'Sales History Added Successfully!',
             'alert-type' => 'success',
@@ -573,67 +569,52 @@ class SalesController extends Controller
     }
 
     // $startDate, $endDate, $pdf
-   public function salesInvoiceDateSearch($startDate, $endDate, $pdf)
-{
-    $inv = 'INV';
+    public function salesInvoiceDateSearch($startDate, $endDate, $pdf)
+    {
+        $inv = 'INV';
+        $query = Stock::selectRaw('stocks.invoice_no, stocks.customer_id, fa.account_name, MIN(stocks.stock_date) as stock_date, SUM(stocks.stock_out_discount) as total_discount, SUM(stocks.stock_out_total_amount) as total_amount')
+            ->join('finance_accounts as fa', function ($join) {
+                $join->on('stocks.customer_id', '=', 'fa.id')
+                    ->where('fa.account_group_code', '=', '100020001');  // Account Payable code 100020001 use Customer
+            })
+            ->where('stocks.invoice_no', 'LIKE', '%' . $inv . '%');
+        // if ($startDate != 0 && $endDate != 0) {
+        //     $query->whereBetween('stocks.stock_date', [$startDate, $endDate]);
+        // }
+        if ($startDate && $endDate) {
+            // Assuming $startDate and $endDate are in the format 'YYYY-MM-DD'
+            $query->whereRaw('DATE(stocks.stock_date) BETWEEN ? AND ?', [$startDate, $endDate]);
+        }
 
-    $query = Stock::selectRaw('
-            stocks.invoice_no, 
-            stocks.customer_id, 
-            employees.employee_name as employee_name, 
-            MIN(stocks.stock_date) as stock_date, 
-            SUM(stocks.stock_out_discount) as total_discount, 
-            SUM(stocks.stock_out_total_amount) as total_amount
-        ')
-        ->leftJoin('employees', 'stocks.customer_id', '=', 'employees.id')
-        ->where('stocks.invoice_no', 'LIKE', '%' . $inv . '%');
+        if ($pdf == "list") {
+            $salesInvoices = $query->groupBy('stocks.invoice_no', 'stocks.customer_id', 'fa.account_name')
+                ->orderBy('stocks.stock_date', 'ASC')
+                ->get();
+            return response()->json($salesInvoices);
+        }
+        if ($pdf == "pdfurl") {
+            $salesInvoices = $query->groupBy('stocks.invoice_no', 'stocks.customer_id', 'fa.account_name')
+                ->orderBy('stocks.stock_date', 'ASC')
+                ->get();
+            $companySetting = CompanySetting::where('status', 1)->orderBy('id', 'desc')->first();
+            $data['company_name'] = $companySetting->company_name;
+            $data['company_address'] = $companySetting->company_address;
+            $data['company_logo_one'] = $companySetting->company_logo_one;
+            $data['company_mobile'] = $companySetting->company_mobile;
 
-    // Date filter
-    if ($startDate && $endDate) {
-        $query->whereRaw('DATE(stocks.stock_date) BETWEEN ? AND ?', [$startDate, $endDate]);
+            $data['start_date'] = $startDate;
+            $data['end_date'] = $endDate;
+            $pdf = PDF::loadView('pages.pdf.sales_date_invoice_wise_report_pdf', array('dateWiseSalesSearch' => $salesInvoices, 'data' => $data));
+            $pdf->setPaper('A4', 'portrait');
+            return $pdf->stream(Carbon::now() . '-sales_date_invoice_wise_report_pdf.pdf');
+        }
     }
-
-    // Common groupBy
-    $query->groupBy('stocks.invoice_no', 'stocks.customer_id', 'employees.employee_name')
-        ->orderBy('stocks.stock_date', 'ASC');
-
-    // JSON response
-    if ($pdf == "list") {
-        $salesInvoices = $query->get();
-        return response()->json($salesInvoices);
-    }
-
-    // PDF response
-    if ($pdf == "pdfurl") {
-        $salesInvoices = $query->get();
-
-        $companySetting = CompanySetting::where('status', 1)->orderBy('id', 'desc')->first();
-
-        $data['company_name'] = $companySetting->company_name ?? '';
-        $data['company_address'] = $companySetting->company_address ?? '';
-        $data['company_logo_one'] = $companySetting->company_logo_one ?? '';
-        $data['company_mobile'] = $companySetting->company_mobile ?? '';
-        $data['start_date'] = $startDate;
-        $data['end_date'] = $endDate;
-
-        $pdf = PDF::loadView('pages.pdf.sales_date_invoice_wise_report_pdf', [
-            'dateWiseSalesSearch' => $salesInvoices,
-            'data' => $data
-        ]);
-        $pdf->setPaper('A4', 'portrait');
-
-        return $pdf->stream(Carbon::now() . '-sales_date_invoice_wise_report_pdf.pdf');
-    }
-}
-
-
-
     public function salesInvoiceEdit($invoiceNo)
     {
         $warehouses = Warehouse::where('status', 1)->get();
         $products = Product::where('is_saleable', 1)->where('status', 1)->get();
         $units = ProductUnit::get();
-       $customerAccounts = Employee::where('status', 1)->get();
+        $customerAccounts = FinanceAccount::where('account_status', 1)->where('account_group_code', '100020001')->get();
         $toAccounts = FinanceAccount::where('account_status', 1)->where('account_group_code', 'like', '10002%')->whereNotIn('account_group_code', ['100020001'])->get();
         $customerTypes = CustomerType::where('status', 1)->pluck('type_name', 'id')->all();
 
@@ -648,7 +629,7 @@ class SalesController extends Controller
         // dd($invoiceNo);
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            // 'voucher_date' => 'required',
+            'voucher_date' => 'required',
             'customer_id' => 'required',
             'givenAmount' => 'required',
             'table_product_id' => 'required',
@@ -711,9 +692,9 @@ class SalesController extends Controller
                 $stockOut = new Stock();
                 $warehouseId = $request->input('warehouse_id')[$key];
                 $stockQuantity = $request->input('table_product_quantity')[$key];
-                $stockPrice = 0;
-                $stockDiscount = 0;
-                $stockTotal = 0;
+                $stockPrice = $request->input('table_product_price')[$key];
+                $stockDiscount = $request->input('table_product_discount')[$key];
+                $stockTotal = $request->input('table_product_cart_amount')[$key];
                 $product = Product::find($productId);
                 $productName = $product ? $product->product_name : 'Unknown Product';
 
@@ -853,8 +834,7 @@ class SalesController extends Controller
     public function salesInvoiceDetails($invoiceNo)
     {
 
-        $stocks = Stock::with(['product', 'customer_finance_account','employee_finance_account'])->where('invoice_no', $invoiceNo)->get();
-        $customerAccounts = Employee::where('status', 1)->get();
+        $stocks = Stock::with(['product', 'customer_finance_account'])->where('invoice_no', $invoiceNo)->get();
         // $customer_ids = $stocks->pluck('customer_id')->unique();
         // $acid = $customer_ids->first();
         $product_service_detail_id = $stocks[0]->product_service_detail_id;
@@ -868,7 +848,7 @@ class SalesController extends Controller
         $customerPayment = FinanceTransaction::where('invoice_no', $invoiceNo)->where('acid', $acid)->where('balance_type', 'Cr')->pluck('amount')->first();
         $paymentNarration = FinanceTransaction::where('invoice_no', $invoiceNo)->where('acid', $acid)->where('balance_type', 'Cr')->pluck('narration')->first();
 
-        return view('pages.product.stock.sales_report_invoice_details', compact('customerAccounts','stocks', 'customerPayment', 'paymentNarration', 'productServiceDetail'));
+        return view('pages.product.stock.sales_report_invoice_details', compact('stocks', 'customerPayment', 'paymentNarration', 'productServiceDetail'));
     }
     public function salesInvoiceDetailsPdf($invoices)
     {
@@ -878,7 +858,7 @@ class SalesController extends Controller
         $data['company_logo_one'] = $companySetting->company_logo_one;
         $data['company_mobile'] = $companySetting->company_mobile;
 
-        $stocks = Stock::with(['product', 'customer_finance_account','employee_finance_account'])->where('invoice_no', $invoices)->get();
+        $stocks = Stock::with(['product', 'customer_finance_account'])->where('invoice_no', $invoices)->get();
         $product_service_detail_id = $stocks[0]->product_service_detail_id;
         $productServiceDetail = ProductServiceDetail::select('product_service_details.id as product_service_detail_id', 'product_service_details.service_number', 'product_services.id as product_services_id', 'product_services.product_id', 'product_services.service_location', 'products.product_name')
             ->join('product_services', 'product_service_details.product_service_id', '=', 'product_services.id')
@@ -894,9 +874,9 @@ class SalesController extends Controller
         $pdf = PDF::loadView('pages.pdf.sales_report_invoice_wise_pdf', array('productServiceDetail' => $productServiceDetail, 'stocks' => $stocks, 'invoices' => $invoices, 'customerPayment' => $customerPayment, 'paymentNarration' => $paymentNarration, 'data' => $data));
         $pdf->setPaper('A4', 'portrait');
 
-        //return view('pages.pdf.sales_report_invoice_wise_pdf', array('productServiceDetail' => $productServiceDetail, 'stocks' => $stocks, 'invoices' => $invoices, 'customerPayment' => $customerPayment, 'paymentNarration' => $paymentNarration, 'data' => $data));
+        return view('pages.pdf.sales_report_invoice_wise_pdf', array('productServiceDetail' => $productServiceDetail, 'stocks' => $stocks, 'invoices' => $invoices, 'customerPayment' => $customerPayment, 'paymentNarration' => $paymentNarration, 'data' => $data));
 
-         return $pdf->stream(Carbon::now() . '-sales_report.pdf');
+        // return $pdf->stream(Carbon::now() . '-sales_report.pdf');
 
 
     }

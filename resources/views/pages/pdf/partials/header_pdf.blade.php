@@ -19,28 +19,31 @@
         padding: 2px 5px;  /* Optional: Add padding to give space between text and border */
     }
 </style>
-<table class="table table-borderless table-sm mb-0 pb-0">
-    <tbody>
-        <tr class="text-center">
-            <td>
-                <h5 class="py-0 my-0" style="text-transform: uppercase;">{{ $data['company_name'] }}</h5>
-                <p class="py-0 mb-1">
-                    {{ $data['company_address'] }}
-                    <br>
-                    {{ $data['factory_address'] }}
-                    <br>
-                    {{ $data['company_mobile'] }}
-                </p>
-            </td>
-        </tr>
-    </tbody>
+<table style="width: 100%; border-spacing: 0; padding: 0; margin: 0;">
+    <tr>
+        {{-- Left: Logo --}}
+        <td style="width: 80px; padding: 0; margin: 0; vertical-align: top;">
+            <img src="{{ $imageDataUri }}" alt="{{ $data['company_name'] }}"
+                 style="display: block; max-height: 60px; width: auto; object-fit: contain; margin: 0; padding: 0;" />
+        </td>
+
+        {{-- Middle: Company Info (top aligned to image) --}}
+        <td class="text-center" style="vertical-align: top; padding-left: 10px;">
+            <h5 style="text-transform: uppercase; margin: 0; padding: 0;">
+                {{ $data['company_name'] }}
+            </h5>
+            <p style="margin: 0; padding: 0; line-height: 1.2;">
+                {{ $data['company_address'] }}<br>
+                {{ $data['factory_address'] }}<br>
+                {{ $data['company_mobile'] }}
+            </p>
+        </td>
+
+        {{-- Right: Empty cell to balance layout --}}
+        <td style="width: 80px; padding: 0; margin: 0;"></td>
+    </tr>
 </table>
-<table class="mb-0 pb-0" style="position: absolute; margin-top: -95px;" align="start">
-    <tbody>
-        <tr class="text-center">
-            <td>
-                <img src="{{ $imageDataUri }}" alt="{{ $data['company_name'] }}" height="60" />
-            </td>
-        </tr>
-    </tbody>
-</table>
+
+
+
+

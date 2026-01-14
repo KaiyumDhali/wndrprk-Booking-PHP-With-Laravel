@@ -32,7 +32,7 @@
         <thead>
             <tr class="text-start text-uppercase text-center text-light bg-secondary">
                 <th class="min-w-100px text-center">Date</th>
-                <th class="min-w-50px text-center">Invoice No</th>
+                <th class="min-w-50px text-center">Issue No</th>
                 <th class="min-w-100px text-center">Product Name</th>
                 <th class="min-w-50px text-center">Unit</th>
                 <th class="min-w-100px text-center">In Qty</th>

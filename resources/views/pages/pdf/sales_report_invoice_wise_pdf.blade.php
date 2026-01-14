@@ -31,44 +31,44 @@
 
 </head>
 
-<body style="font-size:12px">
+<body style="font-size:12px" >
     {{-- include header --}}
     @include('pages.pdf.partials.header_pdf')
 
-    <div class="text-center py-0 my-0">
+    <div class="text-center my-1">
 
         @if ($productServiceDetail)
-            <h5 class="py-0 my-0 pdf_title">Service Invoice</h5>
+            <h5 class=" pdf_title">Service Invoice</h5>
         @else
-            <h5 class="py-0 my-0 pdf_title">Sales Invoice</h5>
+            <h5 class=" pdf_title">Consume Invoice</h5>
         @endif
     </div>
 
-    <table style="width: 100%">
+    <table style="width: 100%"  class="">
         <tr>
             <td style="width: 50%">
-                <h6 class="my-0">Customer Details</h6>
+                <h6 class="my-0">Employee Details</h6>
                 <table style="font-size: 14px; font-style:bold;">
                     <thead>
                         <tr>
-                            <td>Customer ID</td>
+                            <td>Employee ID</td>
                             <td>:</td>
-                            <td>{{ $stocks[0]->customer_finance_account->id }}</td>
+                            <td>{{ $stocks[0]->employee_finance_account->id }}</td>
                         </tr>
                         <tr>
-                            <td scope="col">Customer Name</td>
+                            <td scope="col">Employee Name</td>
                             <td>:</td>
-                            <td>{{ $stocks[0]->customer_finance_account->account_name }}</td>
+                            <td>{{ $stocks[0]->employee_finance_account->employee_name }}</td>
                         </tr>
                         <tr>
                             <td scope="col">Address</td>
                             <td>:</td>
-                            <td>{{ $stocks[0]->customer_finance_account->account_address }}</td>
+                            <td>{{ $stocks[0]->employee_finance_accountpresent_address }}</td>
                         </tr>
                         <tr>
                             <td scope="col">Mobile No</td>
                             <td>:</td>
-                            <td>{{ $stocks[0]->customer_finance_account->account_mobile }}</td>
+                            <td>{{ $stocks[0]->employee_finance_account->mobile }}</td>
                         </tr>
                     </thead>
                 </table>
@@ -78,17 +78,19 @@
                     <thead style="text-align: right;">
                         <tr>
                             <td>
-                                Invoice No : ({{ $stocks[0]->invoice_no }})
+                                Issue No : ({{ $stocks[0]->invoice_no }})
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="d-none">
                             <td>
                                 Delivery Challan : ({{ $stocks[0]->delivery_challan_no }})
                             </td>
                         </tr>
                         <tr>
-                            <td scope="col" style="text-align: right; font-weight: bold;">Invoice Date :
-                                {{ $stocks[0]->stock_date }}</td>
+                            <td scope="col" style="text-align: right; font-weight: bold;">
+                                        Issue Date : {{ \Carbon\Carbon::parse($stocks[0]->stock_date)->format('Y-m-d') }}
+                                    </td>
+
                         </tr>
                         @if ($productServiceDetail)
                             <tr>
@@ -126,9 +128,9 @@
                 <th class="min-w-175px">Product Name</th>
                 <th class="min-w-70px">Unit</th>
                 <th class="min-w-70px">Quantity</th>
-                <th class="min-w-100px">Unit Price</th>
-                <th class="min-w-100px">Discount</th>
-                <th class="min-w-100px ">Total Amount</th>
+                <th class="min-w-100px d-none">Unit Price</th>
+                <th class="min-w-100px d-none">Discount</th>
+                <th class="min-w-100px d-none">Total Amount</th>
             </tr>
         </thead>
         <!--end::Table head-->
@@ -143,11 +145,11 @@
                     <td class="text-left">{{ $stock->product->product_name }}</td>
                     <td class="text-center">{{ $stock->product->unit->unit_name }}</td>
                     <td class="">{{ $stock->stock_out_quantity }}</td>
-                    <td class="text-right">
+                    <td class="text-right d-none">
                         {{ formatCurrency($stock->stock_out_unit_price) }}</td>
-                    <td class="text-right">
+                    <td class="text-right d-none">
                         {{ formatCurrency($stock->stock_out_discount) }}</td>
-                    <td class="text-right">
+                    <td class="text-right d-none">
                         {{ formatCurrency($productTotal = $stock->stock_out_total_amount) }}
                     </td>
                     <span
@@ -156,9 +158,9 @@
             @endforeach
             <!--end::Products-->
             <!--begin::Subtotal-->
-            <tr class="" style="font-size:14px">
+            <tr class="d-none" style="font-size:14px">
                 <td colspan="7" class="" style="text-align: right; font-weight: bold;">Subtotal</td>
-                <td colspan="7" class="text-right" style="font-weight: bold;">
+                <td colspan="7" class="text-right d-none" style="font-weight: bold;">
                     {{ formatCurrency($initialTotal) }}
                 </td>
             </tr>
@@ -170,23 +172,23 @@
                     {{ formatCurrency($initialDiscount) }}
                 </td>
             </tr> --}}
-            <tr>
+            <tr class="d-none">
                 <td colspan="7" class="" style="text-align: right; font-weight: bold;">INV Discount</td>
                 <td colspan="7" class="text-right" style="font-weight: bold;">0.00</td>
             </tr>
             <!--end::VAT-->
             <!--begin::Grand total-->
-            <tr style="font-size:14px">
+            <tr  class="d-none" style="font-size:14px">
                 <td colspan="7" class="" style="text-align: right; font-weight: bold;">Net Amount (Taka)</td>
                 <td colspan="7" class="text-right" style="font-weight: bold;">
                     {{ formatCurrency($initialTotal) }}</td>
             </tr>
-            <tr style="font-size:14px">
+            <tr class="d-none" style="font-size:14px">
                 <td colspan="7" class="" style="text-align: right; font-weight: bold;">Paid Amount</td>
                 <td colspan="7" class="text-right" style="font-weight: bold;">
                     {{ formatCurrency($customerPayment) }} </td>
             </tr>
-            <tr style="font-size:14px">
+            <tr class="d-none" style="font-size:14px">
                 <td colspan="7" class="" style="text-align: right; font-weight: bold;">Due Amount (Taka)</td>
                 <td colspan="7" class="text-right" style="font-weight: bold;">
                     <span class="double-underline">{{ formatCurrency($initialTotal - $customerPayment) }}
@@ -198,14 +200,14 @@
         <!--end::Table head-->
     </table>
 
-    <p><b>In Words: {{ numberToWord($initialTotal) }}</b> </p>
+    <p class="d-none"><b>In Words: {{ numberToWord($initialTotal) }}</b> </p>
 
     {{-- @if ($stocks[0]->remarks)
-        <p><b>Remarks: </b>{{$stocks[0]->remarks}} </p>
+        <p ><b>Remarks: </b>{{$stocks[0]->remarks}} </p>
     @endif --}}
 
     @if ($customerPayment)
-        <p><b>Narration:</b> {{ $paymentNarration }}</p>
+        <p class="d-none"><b>Narration:</b> {{ $paymentNarration }}</p>
     @else
         @if ($stocks[0]->remarks)
             <p><b>Remarks: </b>{{ $stocks[0]->remarks }} </p>
@@ -213,11 +215,11 @@
     @endif
 
     <br>
-    <p> <b>for {{ $data['company_name'] }}</b> </p>
+    <p class="d-none"> <b>for {{ $data['company_name'] }}</b> </p>
     <br><br>
-    <div style="text-align: left; padding-top: 30px;">
+    <div style="text-align: left; padding-top: 30px;" class="d-none">
         <div style="display: inline-block; width: 130px; padding-right: 20px">
-            <p style="border-top: 1px solid #000000; font-weight: bold; text-align: center;">Authorised Signatory </p>
+            <p  style="border-top: 1px solid #000000; font-weight: bold; text-align: center;">Authorised Signatory </p>
         </div>
         <div style="display: inline-block; width: 130px; padding: 0px 20px;">
             <p style="border-top: 1px solid #000000; font-weight: bold; text-align: center;">Customer Signatory</p>

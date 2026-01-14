@@ -184,6 +184,522 @@
                 {{-- End: General Setting item --}}
 
 
+                  <div data-kt-menu-trigger="click"
+                        class="menu-item menu-accordion ">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                           <i class="bi bi-box fs-2"></i>
+
+                            <span class="menu-title ms-4"> Inventory</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <!--end:Menu link-->
+                        <!--begin:Menu sub-->
+                        <div class="menu-sub menu-sub-accordion">
+                {{-- Add: Supplier Menu item --}}
+                @can('read supplier')
+                <div data-kt-menu-trigger="click"
+                    class="menu-item menu-accordion {{ request()->routeIs('suppliers*', 'supplier_ledgers*') ? 'here show' : '' }}">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <i class="bi bi-person-video2 fs-2"></i>
+                        <span class="menu-title ms-4"> Supplier</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            @can('read supplier')
+                                <a class="menu-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}"
+                                    href="{{ route('suppliers.index') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Add Supplier</span>
+                                </a>
+                            @endcan
+                            <!--end:Menu link-->
+                            <!--begin:Menu link-->
+                            @can('read supplier ledger')
+                                <a class="menu-link {{ request()->routeIs('supplier_ledgers.*') ? 'active' : '' }}"
+                                    href="{{ route('supplier_ledgers.index') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Supplier Ledgers</span>
+                                </a>
+                            @endcan
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
+                @endcan
+                {{-- End: Supplier Menu item --}}
+
+
+                 {{-- Add: Employee Menu item --}}
+                <div data-kt-menu-trigger="click"
+                    class="menu-item menu-accordion {{ request()->routeIs('employees*', 'employee_ledger*') ? 'here show' : '' }}">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <i class="bi bi-people fs-2"></i>
+                        <span class="menu-title ms-4"> Employee</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            @can('read employee')
+                                <a class="menu-link {{ request()->routeIs('employees.*') ? 'active' : '' }}"
+                                    href="{{ route('employees.index') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Add Employee</span>
+                                </a>
+                            @endcan
+                        </div>
+                        <!--end:Menu link-->
+                        <!--begin:Menu link-->
+                        <div class="menu-item">
+                            @can('read employee ledger')
+                                <a class="menu-link {{ request()->routeIs('employee_ledger.*') ? 'active' : '' }}"
+                                    href="{{ route('employee_ledger.index') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Employee Ledgers</span>
+                                </a>
+                            @endcan
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
+                {{-- End: Employee Menu item --}}
+
+
+
+              
+
+                   {{-- Add: Product item --}}
+                @canany(['read product'])
+                    <div data-kt-menu-trigger="click"
+                        class="menu-item menu-accordion {{ request()->routeIs(
+                            'products*',
+                            'product_type*',
+                            'product_fragrance*',
+                            'categories.*',
+                            'sub_category*',
+                            'brands*',
+                            'colors*',
+                            'sizes*',
+                            'units*',
+                        )
+                            ? 'here show'
+                            : '' }}">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <i class="bi bi-bag-check fs-2"></i>
+                            <span class="menu-title ms-4"> Product</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <!--end:Menu link-->
+                        <!--begin:Menu sub-->
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                @can('read product')
+                                    <a class="menu-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
+                                        href="{{ route('products.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Add Product</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read product type')
+                                    <a class="menu-link {{ request()->routeIs('product_type.index*') ? 'active' : '' }}"
+                                        href="{{ route('product_type.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Product Type</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read category')
+                                    <a class="menu-link {{ request()->routeIs('categories.index*') ? 'active' : '' }}"
+                                        href="{{ route('categories.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Category</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read sub category')
+                                    <a class="menu-link {{ request()->routeIs('sub_category.*') ? 'active' : '' }}"
+                                        href="{{ route('sub_category.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Sub Category</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read brand')
+                                    <a class="menu-link {{ request()->routeIs('brands.*') ? 'active' : '' }}"
+                                        href="{{ route('brands.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Brand</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read product fragrance')
+                                    <a class="menu-link {{ request()->routeIs('product_fragrance.*') ? 'active' : '' }}"
+                                        href="{{ route('product_fragrance.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Fragrance</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read color')
+                                    <a class="menu-link {{ request()->routeIs('colors.*') ? 'active' : '' }}"
+                                        href="{{ route('colors.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Color</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read size')
+                                    <a class="menu-link {{ request()->routeIs('sizes.*') ? 'active' : '' }}"
+                                        href="{{ route('sizes.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Size</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read unit')
+                                    <a class="menu-link {{ request()->routeIs('units.*') ? 'active' : '' }}"
+                                        href="{{ route('units.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Unit</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <!--end:Menu sub-->
+                    </div>
+                @endcanany
+                {{-- End: Product Menu item --}}
+
+
+
+
+                 {{-- Add: Product purchase item --}}
+                @canany(['read purchase', 'read purchase report'])
+                    <div data-kt-menu-trigger="click"
+                        class="menu-item menu-accordion {{ request()->routeIs('purchase*', 'purchase_invoice_return_list', 'purchase_invoice_edit', 'purchase_invoice_list*', 'supplier_wise_purchase_list*') ? 'here show' : '' }}">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                           <i class="bi bi-box fs-2"></i>
+
+                            <span class="menu-title ms-4"> Purchase</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <!--end:Menu link-->
+                        <!--begin:Menu sub-->
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                @can('read purchase')
+                                    <a class="menu-link {{ request()->routeIs('purchase.*') ? 'active' : '' }}"
+                                        href="{{ route('purchase.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Product Purchase</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+
+                                <!--begin:Menu link-->
+                                @can('read purchase report')
+                                    <a class="menu-link {{ request()->routeIs('purchase_invoice_return_list*') ? 'active' : '' }}"
+                                        href="{{ route('purchase_invoice_return_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Purchase Return Report</span>
+                                    </a>
+                                @endcan
+                                @can('read purchase report')
+                                    <a class="menu-link {{ request()->routeIs('purchase_invoice_list*', 'purchase_invoice_edit*', 'purchase_invoice_details*') ? 'active' : '' }}"
+                                        href="{{ route('purchase_invoice_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Invoice Wise Purchase Report</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+
+                                <!--begin:Menu link-->
+                                @can('read purchase report')
+                                    <a class="menu-link {{ request()->routeIs('supplier_wise_purchase_list*') ? 'active' : '' }}"
+                                        href="{{ route('supplier_wise_purchase_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Supplier Wise Purchase Register Report</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <!--end:Menu sub-->
+                    </div>
+                @endcanany
+                {{-- End: Product purchase Menu item --}}
+
+
+
+                {{-- Add: Product sales item --}}
+                @canany(['read sales', 'read sales report', 'sales report datewise', 'item wise profit'])
+                    <div data-kt-menu-trigger="click"
+                        class="menu-item menu-accordion {{ request()->routeIs('sales*', 'sales_invoice_return_list', 'sales_invoice_return_details', 'sales_invoice_edit', 'item_wise_profit_list', 'invoice_wise_profit_list', 'item_wise_sales_list', 'sales_invoice_list*', 'customer_wise_sales_list*') ? 'here show' : '' }}">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <i class="bi bi-cart fs-2"></i>
+
+                            <span class="menu-title ms-4"> Consume Portal</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <!--end:Menu link-->
+                        <!--begin:Menu sub-->
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+
+                                <!--begin:Menu link-->
+                                @can('read sales')
+                                    <a class="menu-link {{ request()->routeIs('sales.*') ? 'active' : '' }}"
+                                        href="{{ route('sales.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Product Consumer</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read sales report')
+                                    <a class="menu-link {{ request()->routeIs('sales_invoice_list*', 'sales_invoice_edit*', 'sales_invoice_details*') ? 'active' : '' }}"
+                                        href="{{ route('sales_invoice_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Issue No Wise Consume Reports</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                <!-- @can('read sales report')
+                                    <a class="menu-link {{ request()->routeIs('sales_challan_list*', 'sales_challan_details*') ? 'active' : '' }}"
+                                        href="{{ route('sales_challan_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Challan Wise Sales Reports</span>
+                                    </a>
+                                @endcan -->
+                                <!--end:Menu link-->
+
+                                <!--begin:Menu link-->
+                                <!-- @can('read sales report')
+                                    <a class="menu-link {{ request()->routeIs('sales_invoice_return_list*', 'sales_invoice_return_details*') ? 'active' : '' }}"
+                                        href="{{ route('sales_invoice_return_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Invoice Wise Sales Return Reports</span>
+                                    </a>
+                                @endcan -->
+                                <!--end:Menu link-->
+
+                                <!--begin:Menu link-->
+                                <!-- @can('read sales report datewise')
+                                    <a class="menu-link {{ request()->routeIs('customer_wise_sales_list*') ? 'active' : '' }}"
+                                        href="{{ route('customer_wise_sales_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Customer Wise Sales Reports</span>
+                                    </a>
+                                @endcan -->
+                                <!--end:Menu link-->
+
+                                <!--begin:Menu link-->
+                                {{-- @can('read sales report datewise')
+                                    <a class="menu-link {{ request()->routeIs('item_wise_sales_list*') ? 'active' : '' }}"
+                                        href="{{ route('item_wise_sales_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Item Wise Sales Reports</span>
+                                    </a>
+                                @endcan --}}
+                                     <!-- @can('read sales details report')
+                                    <a class="menu-link {{ request()->routeIs('read sales details report*') ? 'active' : '' }}"
+                                        href="{{ route('report.sales.details') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Sales Details Reports</span>
+                                    </a>
+                                @endcan -->
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                <!-- @can('read item wise profit')
+                                    <a class="menu-link {{ request()->routeIs('item_wise_profit_list*') ? 'active' : '' }}"
+                                        href="{{ route('item_wise_profit_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Item Wise Profit Reports</span>
+                                    </a>
+                                @endcan -->
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                <!-- @can('read invoice wise profit')
+                                    <a class="menu-link {{ request()->routeIs('invoice_wise_profit_list*') ? 'active' : '' }}"
+                                        href="{{ route('invoice_wise_profit_list') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Invoice Wise Profit Reports</span>
+                                    </a>
+                                @endcan -->
+                                <!--end:Menu link-->
+                                <!-- @can('read customer wise profit')
+                                    <a class="menu-link {{ request()->routeIs('report.customer-item-profit*') ? 'active' : '' }}"
+                                        href="{{ route('report.customer-item-profit') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Item & Customer Wise Profit Reports</span>
+                                    </a>
+                                @endcan -->
+
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <!--end:Menu sub-->
+                    </div>
+                @endcanany
+                {{-- End: Product sales Menu item --}}
+
+
+                  {{-- Add: Product Stock item --}}
+                @canany(['read stock report'])
+                    <div data-kt-menu-trigger="click"
+                        class="menu-item menu-accordion {{ request()->routeIs(
+                            'stock_report*',
+                            'finish_good_wise_stock_report*',
+                            'material_wise_stock_report*',
+                            'item_wise_stock_report*',
+                        )
+                            ? 'here show'
+                            : '' }}">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <i class="bi bi-building fs-2"></i>
+
+                            <span class="menu-title ms-4"> Product Stock</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <!--end:Menu link-->
+                        <!--begin:Menu sub-->
+                        <div class="menu-sub menu-sub-accordion">
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                {{-- @can('read stock report')
+                                <a class="menu-link {{ request()->routeIs('stock_report*') ? 'active' : '' }}"
+                                    href="{{ route('stock_report') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">Today Stock Report</span>
+                                </a>
+                            @endcan --}}
+                                <!--end:Menu link-->
+                                <!--begin:Menu link-->
+                                @can('read stock report')
+                                    <a class="menu-link {{ request()->routeIs('finish_good_wise_stock_report*') ? 'active' : '' }}"
+                                        href="{{ route('finish_good_wise_stock_report') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Products Stock</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                      
+                                <!--begin:Menu link-->
+                                @can('read stock report')
+                                    <a class="menu-link {{ request()->routeIs('item_wise_stock_report*') ? 'active' : '' }}"
+                                        href="{{ route('item_wise_stock_report') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Item Wise Stock Ledger</span>
+                                    </a>
+                                @endcan
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <!--end:Menu sub-->
+                    </div>
+                @endcanany
+                {{-- End: Product Menu item --}}
+                                </div>
+                                </div>
                 <!--begin:Menu About Us -->
                 <div class="menu-item menu-accordion {{ request()->routeIs('room_type') ? 'here show' : '' }}">
                     <!--begin:Menu link-->

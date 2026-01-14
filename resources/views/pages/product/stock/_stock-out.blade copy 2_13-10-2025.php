@@ -7,10 +7,6 @@
         .table> :not(caption)>*>* {
             padding: 0.3rem !important;
         }
-        .d-none {
-    display: none !important;
-}
-
     </style>
     <div class="container-fluid">
         <!-- Page Heading -->
@@ -27,53 +23,39 @@
 
         <form class="px-0" id="salesform" method="POST" action="{{ route('sales.store') }}" enctype="multipart/form-data">
             @csrf
-            <div class="row ">
+            <div class="row">
                 <!-- Product add to card Content Row -->
-                <div class="col-md-12">
+                <div class="col-md-8">
 
-                    <div class="row justify-content-center">
+                    <div class="row">
                         {{-- select product --}}
-                        <div class="col-md-10 card shadow">
+                        <div class="col-md-12 card shadow">
                             <div class="card-header px-2 mx-0">
                                 <div class="d-sm-flex align-items-center justify-content-between">
-                                    <h1 class="h3 mb-0 text-gray-800">{{ __('Product Consume') }}</h1>
+                                    <h1 class="h3 mb-0 text-gray-800">{{ __('Sales') }}</h1>
                                 </div>
                             </div>
                             <div class="card-body py-3 px-2">
                                 <div class="col-md-12 pb-3">
                                     <div class="row">
                                         <div class="form-group col-md-2 pt-0 pb-2">
-                                            <label class="required">{{ __('Consuem Date') }}</label>
-
+                                            <label class="required">{{ __('Sales Date') }}</label>
                                             <input type="date"
                                                 class="form-control form-control-sm form-control-solid"
-                                                id="voucher_date" name="voucher_date" value="<?= date('Y-m-d') ?>"
-                                                required />
-
-                                        </div>
-                                       <div class="form-group col-md-4 pt-0 pb-2">
-                                            <label>{{ __('Select Warehouse') }}</label>
-                                            <select id="warehouseId" class="form-select form-select-sm" name="warehouse_id" data-control="select2" data-placeholder="Select Warehouse">
-                                                <option value="" disabled selected>{{ __('Select Warehouse') }}</option>
-                                                @foreach ($warehouses as $warehouse)
-                                                    <option value="{{ $warehouse->id }}" {{ $loop->first ? 'selected' : '' }}>
-                                                        {{ $warehouse->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                                id="voucher_date" name="voucher_date" value="" required />
                                         </div>
 
                                         <div class="form-group col-md-4 pt-0 pb-2">
                                             <div class="card-body px-0 pb-2 pt-0 d-flex align-items-center">
                                                 <div class="flex-grow-1">
-                                                    <label class="required">{{ __('Select Employee') }}</label>
+                                                    <label class="required">{{ __('Select Customer') }}</label>
                                                     <select id="changeCustomer" class="form-control form-control-sm"
                                                         name="customer_id" data-control="select2"
                                                         data-placeholder="Select Customer" required>
                                                         <option></option>
                                                         @foreach ($customerAccounts as $customerAccount)
                                                             <option value="{{ $customerAccount->id }}">
-                                                                {{ $customerAccount->employee_name }}
+                                                                {{ $customerAccount->account_name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -85,7 +67,7 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <!-- <div class="form-group col-md-3 d-none customerInfo">
+                                        <div class="form-group col-md-3 d-none customerInfo">
                                             <div class="card mt-5 p-2">
                                                 <label for="" id="customerAdd4"></label>
                                             </div>
@@ -94,7 +76,22 @@
                                             <div class="card mt-5 p-2">
                                                 <label for="" id="customerAdd3"></label>
                                             </div>
-                                        </div> -->
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-6 pt-0 pb-2">
+                                            <label>{{ __('Select Warehouse') }}</label>
+                                            <select id="warehouseId" class="form-select form-select-sm"
+                                                name="warehouse_id" data-control="select2" data-hide-search="false">
+                                                <option value="">Select Warehouse</option>
+                                                @foreach ($warehouses as $warehouse)
+                                                    <option value="{{ $warehouse->id }}">
+                                                        {{ $warehouse->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                         <div class="form-group col-md-6 pt-0 pb-2">
                                             <label>{{ __('Select Product') }}</label>
                                             <select id="changeProduct" class="form-select form-select-sm"
@@ -108,105 +105,59 @@
                                                 @endforeach
                                             </select>
                                         </div>
-
-                                          <div class="form-group col-md-6 my-3">
-                                            <label for="order">{{ __('Product Name') }}</label>
-                                            <input type="text"
-                                                class="form-control form-control-sm form-control-solid"
-                                                id="product_name" name="product_name" value="" />
-
-                                            
-                                        </div>
                                     </div>
 
                                     <div class="row">
-                                       
-                                        <!-- <div class="form-group col-md-4 pt-0 pb-2">
-                                            <label>{{ __('Select Product POS') }}</label>
-
-                                            {{-- <select id="changeProduct_2" class="form-select form-select-sm"
-                                                name="product_code" data-control="select2" data-hide-search="false">
-                                                <option value="">Select Product</option>
-                                                @foreach ($products as $product)
-                                                    <option value="{{ $product->id }}">Name:
-                                                        {{ $product->product_name }}
-                                                        (Code: {{ $product->product_code }})
-                                                    </option>
-                                                @endforeach
-                                            </select> --}}
-
-                                        <input type="text" class="form-control form-control-sm"
-                                                id="change_product_2" name="product_code_scan" value="">
-
-                                        </div> -->
-                                        
-                                      
-                                         <div class="form-group col-md-2 my-3">
+                                        <div class="form-group col-md-4 my-3">
+                                            <label for="order">{{ __('Product Name') }}</label>
+                                            <input type="text"
+                                                class="form-control form-control-sm form-control-solid" readonly
+                                                id="product_name" name="product_name " />
+                                        </div>
+                                        <div class="form-group col-md-2 my-3">
                                             <label for="order">{{ __('Code') }}</label>
                                             <input type="text"
                                                 class="form-control form-control-sm form-control-solid" readonly
-                                                id="product_code" name="product_code" />
+                                                id="product_code" name="product_code " />
                                         </div>
                                         <div class="form-group col-md-2 my-3">
                                             <label for="order">{{ __('Unit Name') }}</label>
                                             <input type="text"
                                                 class="form-control form-control-sm form-control-solid" readonly
-                                                id="sales_unit" name="sales_unit" />
+                                                id="sales_unit" name="sales_unit " />
                                         </div>
-                                        <div class="form-group col-md-2 my-3 d-none">
+
+                                        <div class="form-group col-md-2 my-3">
                                             <label for="order">{{ __('Price (Per Unit)') }}</label>
-                                            <input type="text"
-                                                class="form-control form-control-sm form-control-solid" id="sales_price"
+                                            <input type="text" class="form-control form-control-sm" id="sales_price"
                                                 name="sales_price"
                                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                             <input type="hidden" class="form-control form-control-sm"
                                                 id="purchase_price" name="purchase_price"
                                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                         </div>
-
+                                        
                                         <div class="form-group col-md-2 my-3">
                                             <label for="order">{{ __('Present Stock') }}</label>
                                             <input type="text"
                                                 class="form-control form-control-sm form-control-solid"
-                                                id="present_stock" name="present_stock" step="1"
-                                                min="0" oninput="this.value = this.value.replace(/\D/g, '');"
-                                                readonly>
-                                        </div>
-
-                                        <div class="form-group col-md-2 my-3">
-                                            <label for="order">{{ __('Product ID') }}</label>
-                                            <input type="number"
-                                                class="form-control form-control-sm form-control-solid"
-                                                id="product_id_2" name="product_id_2" value="" />
+                                                id="present_stock" name="present_stock" step="1" min="0"
+                                                oninput="this.value = this.value.replace(/\D/g, '');" readonly>
                                         </div>
                                         <div class="form-group col-md-2 my-3">
                                             <label for="order">{{ __('Quantity') }}</label>
                                             <input type="text" class="form-control form-control-sm"
-                                                id="productQuantity1" name="quantity"
+                                                id="productQuantity" name="quantity"
                                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                         </div>
-
-                                        
-                                        <div class="form-group col-md-2 my-3 text-end">
-                                            <button type="button" id="addProduct"
-                                                class="btn btn-sm btn-primary px-5 mt-6">{{ __('Add to Cart') }}</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        
-                                       
-
-                                        
-                                        
-                                        <div class="form-group col-md-2 my-3 d-none">
+                                        <div class="form-group col-md-2 my-3">
                                             <label for="order">{{ __('Amount') }}</label>
                                             <input type="text"
                                                 class="form-control form-control-sm form-control-solid"
                                                 id="quantityAmount" name="Amount" value=0 readonly />
                                         </div>
 
-                                        <div class="form-group col-md-2 my-3 d-none">
+                                        <div class="form-group col-md-2 my-3">
                                             <label class="">Discount Type</label>
                                             <select class="form-select form-select-sm" data-control="select2"
                                                 name="type" id="percentageType">
@@ -216,66 +167,54 @@
                                             </select>
                                         </div>
 
-                                        <div class="form-group col-md-2 d-none my-3 d-none" id="percentageInputContainer">
+                                        <div class="form-group col-md-2 d-none my-3" id="percentageInputContainer">
                                             <label class=""><span class="">Percentage </span></label>
                                             <input type="text" class="form-control form-control-sm"
                                                 name="percentage" id="percentageInput"
                                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                         </div>
 
-                                        <div class="form-group col-md-2 my-3 d-none" id="amountInputContainer">
+                                        <div class="form-group col-md-2 my-3" id="amountInputContainer">
                                             <label class=""><span>Discount </span> </label>
                                             <input type="text" class="form-control form-control-sm" id="discount"
                                                 name="discount"
                                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                         </div>
 
+                                        <div class="form-group col-md-2 my-3">
+                                            <button type="button" id="addProduct"
+                                                class="btn btn-sm btn-primary px-5 mt-6">{{ __('Add to Cart') }}</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {{-- add to product --}}
-                       <div class="col-md-10 card shadow my-5 px-5 mx-0">
+                        <div class="col-md-12 card shadow my-5 px-5 mx-0">
                             <div id="cart_product">
                                 <table id="product_add" class="table table-bordered mt-4">
                                     <tr class="text-center">
                                         <th>SL</th>
-                                        <th>WH.ID</th>
-                                        <th>P.ID</th>
                                         <th>Product Name</th>
                                         <th>Unit</th>
                                         <th class="w-100px">Quantity</th>
-                                        <th class="d-none">Sale Price</th>
-                                        <th class="d-none">Discount</th>
-                                        <th class="d-none">Amount</th>
-                                        <th>Action</th>
+                                        <th>Sale Price</th>
+                                        <th>Discount</th>
+                                        <th>Amount</th>
+                                        <th></th>
                                     </tr>
                                 </table>
 
                                 <table id="sumAmountShow" class="table table-bordered">
-                                    <!-- Summary table here -->
+
                                 </table>
                             </div>
-                           <div class="row">
-                                <div class="form-group col-md-4 ms-auto">
-                                    <label for="remarks" class="form-label">{{ __('Remarks') }}</label>
-                                    <input type="text" class="form-control form-control-sm" id="remarks" name="remarks" />
-                                </div>
-                            </div>
 
-                                                        <!-- Button row aligned to the right -->
-                            <div class="row">
-                                <div class="col text-end"> <!-- Align content to the right -->
-                                    <button type="submit" id="submitBtn"
-                                        class="btn btn-sm btn-success mb-5 mt-4">{{ __('Consume') }}</button>
-                                </div>
-                            </div>
                         </div>
-
                     </div>
                 </div>
                 <!-- Product sales summary Content Row -->
-                <div class="col-md-4 d-none">
+                <div class="col-md-4">
                     <div class="card shadow px-10 pb-8 ms-0 ms-md-5">
                         <div class="card-header my-3 mx-0 px-2">
                             <div class="d-sm-flex align-items-center justify-content-between">
@@ -488,8 +427,13 @@
                             </div>
                             <!--end: Card Body-->
                         </div>
-                       
-                        
+                        <div class="form-group">
+                            <label for="remarks">{{ __('Remarks') }}</label>
+                            <input type="text" class="form-control form-control-sm" id="remarks"
+                                name="remarks" />
+                        </div>
+                        <button type="submit" id="submitBtn"
+                            class="btn btn-sm btn-success px-5 mt-5">{{ __('Sales') }}</button>
 
                     </div>
                 </div>
@@ -825,19 +769,17 @@
                     let present_stock = (product.product_stock_sum_stock_in_quantity - product
                         .product_stock_sum_stock_out_quantity).toFixed(2);
 
-                    $('#product_id_2').val(product.id);
                     $('#product_name').val(product.product_name);
                     $('#product_code').val(product.product_code);
                     $('#sales_unit').val(product.unit.unit_name);
                     $('#sales_price').val(product.sales_price);
                     $('#purchase_price').val(product.purchase_price);
                     $('#present_stock').val(present_stock);
-                    // $('#productQuantity').val(product.pack_size);
-                    onChangeCalculateTotalAmount();
+                    $('#productQuantity').val(product.pack_size);
+                    onChangeCalculateTotalAmount()
                     // $('#quantityAmount').val(product.pack_size * product.sales_price);
                     // product focus
-                    $('#productQuantity1').val('');
-                    $('#productQuantity1').focus();
+                    $('#productQuantity').focus();
 
                 }
             },
@@ -846,8 +788,6 @@
             }
         });
     }
-
-
     // Event handler for when the product selection changes
     $('#changeProduct').on('change', function() {
         let productID = $(this).val();
@@ -858,7 +798,7 @@
 
     // Event handler for changing the #productQuantity, #sales_price
     function onChangeCalculateTotalAmount() {
-        let quantity = $('#productQuantity1').val();
+        let quantity = $('#productQuantity').val();
         let sales_price = $('#sales_price').val();
 
         if (quantity && sales_price) {
@@ -870,29 +810,7 @@
             $('#quantityAmount').val(0);
         }
     }
-    $('#productQuantity1, #sales_price').on('keyup', onChangeCalculateTotalAmount);
-
-
-
-
-
-    function onChangeCalculateTotalAmount_2() {
-        let quantity = 1;
-        let sales_price = $('#sales_price').val();
-
-        // console.log(quantity);
-
-        if (quantity && sales_price) {
-            let totalAmount = quantity * sales_price;
-            totalAmount = (totalAmount).toFixed(3);
-            // totalAmount = Math.round(totalAmount); // Round to nearest integer
-            $('#quantityAmount').val(totalAmount);
-        } else {
-            $('#quantityAmount').val(0);
-        }
-    }
-
-    // $('#productQuantity, #sales_price').on('keyup', onChangeCalculateTotalAmount_2);
+    $('#productQuantity, #sales_price').on('keyup', onChangeCalculateTotalAmount);
 
     // Event handler for changing the discount percentage type
     $('#percentageType').on('change', function() {
@@ -924,7 +842,6 @@
     // -------------------------------- add to card start ---------------------------------------------------------
 
     let id = 1;
-
     // Add Product button click event
     $('#addProduct').on('click', function() {
         // Get values for validation
@@ -934,8 +851,7 @@
         var product_id = $('#changeProduct').val();
         var product_name = $('#product_name').val();
         var sales_unit = $('#sales_unit').val();
-        var quantity = parseFloat($('#productQuantity1').val());
-        var present_stock = parseFloat($('#present_stock').val());
+        var quantity = parseFloat($('#productQuantity').val());
         var sales_price = parseFloat($('#sales_price').val()) || 0;
         var purchase_price = parseFloat($('#purchase_price').val()) || 0;
         var discount = parseFloat($('#discount').val()) || 0;
@@ -973,18 +889,7 @@
                 title: 'Invalid Quantity',
                 text: 'Please enter a valid product quantity before adding.'
             });
-            $('#productQuantity1').focus();
-        } 
-        
-       else if (quantity > present_stock) {
-    Swal.fire({
-        icon: 'error',
-        title: 'Stock Limit Exceeded',
-        html: `Your current stock is <strong>${present_stock}</strong>, but you tried to add <strong>${quantity}</strong>.<br>Please enter a correct quantity.`,
-    });
-    $('#productQuantity1').focus();
-}
-else {
+        } else {
             // All fields are valid, proceed with adding the product logic
             let duplicate_found = false;
             let existingRow;
@@ -1012,7 +917,7 @@ else {
                 existingRow.find('.table_quantity').val(newQuantity).next().val(newQuantity);
                 existingRow.find('.table_discount').val(newDiscount).next().val(newDiscount);
                 existingRow.find('.table_cart_amount').val(newAmount).next().val(newAmount);
-                // existingRow.find('.quantity_text').text(newQuantity);
+                existingRow.find('.quantity_text').text(newQuantity);
                 existingRow.find('.discount_text').text(newDiscount);
                 existingRow.find('.cart_amount').text(newAmount);
 
@@ -1028,23 +933,13 @@ else {
 
                 $('#product_add').append(`
                 <tr class="each_row" data-id="${id}">
-                    <td class="text-center">${id} <input type="hidden" name="table_purchase_price[]" value="${purchase_price}"></td>
-                    <td class="text-center">${warehouseId}<input type="hidden" name="table_warehouse_id[]" value="${warehouseId}"></td>
-                    <td class="text-center">${product_id}</td>
+                    <td class="text-center">${id}<input type="hidden" name="table_purchase_price[]" value="${purchase_price}"></td>
                     <td>${product_name}<input type="hidden" name="table_product_id[]" value="${product_id}"></td>
                     <td class="text-center">${sales_unit}</td>
-                    <td class="text-center">
-                        <span class="quantity_text"></span>
-                        <input type="text" class="table_quantity text-center" name="table_product_quantity[]" 
-                            oninput="this.value = this.value.replace(/[^0-9.]/g, '') 
-                                                .replace(/^0+(\d+\.?)/, '$1') 
-                                                .replace(/(\.\d{2})\d+/, '$1');" 
-                            onchange="if(this.value === '.' || this.value === '' || this.value === '0.') { this.value = ''; }"
-                            value="${quantity}">
-                    </td>
-                    <td class="text-end d-none">${sales_price}<input type="hidden" class="table_price" name="table_product_price[]" value="${sales_price}"></td>
-                    <td class="text-end d-none"><span class="discount_text">${discount}</span><input type="hidden" class="table_discount" name="table_product_discount[]" value="${discount}"></td>
-                    <td id="cart${id}" class="text-end d-none"><span class="cart_amount">${cartAmount}</span><input type="hidden" class="table_cart_amount" name="table_product_cart_amount[]" value="${cartAmount}"></td>
+                    <td class="text-end"><span class="quantity_text">${quantity}</span><input type="hidden" class="table_quantity" name="table_product_quantity[]" value="${quantity}"></td>
+                    <td class="text-end">${sales_price}<input type="hidden" class="table_price" name="table_product_price[]" value="${sales_price}"></td>
+                    <td class="text-end"><span class="discount_text">${discount}</span><input type="hidden" class="table_discount" name="table_product_discount[]" value="${discount}"></td>
+                    <td id="cart${id}" class="text-end"><span class="cart_amount">${cartAmount}</span><input type="hidden" class="table_cart_amount" name="table_product_cart_amount[]" value="${cartAmount}"></td>
                     <td class="text-center"><button type="button" data-id="${id}" class="add_product_delete btn btn-sm btn-danger py-1 px-3">X</button></td>
                 </tr>
             `);
@@ -1072,7 +967,7 @@ else {
         $('#sales_price').val('');
         $('#purchase_price').val('');
         $('#present_stock').val('');
-        $('#productQuantity1').val('');
+        $('#productQuantity').val('');
         $('#quantityAmount').val('');
         $('#discount').val('');
         $('#percentageInput').val('');
@@ -1080,217 +975,6 @@ else {
         $('#percentageInputContainer').addClass('d-none');
         $('#discount').prop('readonly', false);
     }
-
-
-    let typingTimer;
-    const doneTypingInterval = 500;
-
-    $('#change_product_2').on('input', function() {
-        // let productDetails = '';
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => {
-                let product_code = $(this).val();
-                console.log(product_code);
-                if (product_code) {
-                    fetchProductDetails_2(product_code);
-                }
-            }, doneTypingInterval);
-    });
-
-
-    function fetchProductDetails_2(product_code) {
-        $.ajax({
-            url: 'productDetails_2/' + product_code,
-            type: "GET",
-            data: {
-                "_token": "{{ csrf_token() }}"
-            },
-            dataType: "json",
-            success: function(data) {
-                if (data) {
-
-                    // console.log(data);
-
-                    $('#discount').val('');
-                    $('#percentageInput').val('');
-                    $('#percentageType').val('1');
-                    $('#percentageInputContainer').addClass('d-none');
-                    $('#discount').prop('readonly', false);
-
-                    let product = data;
-                    let present_stock = (product.product_stock_sum_stock_in_quantity - product
-                        .product_stock_sum_stock_out_quantity).toFixed(2);
-
-                    // console.log(product.id);
-
-                    $('#product_id_2').val(product.id);
-                    $('#product_name').val(product.product_name);
-                    $('#product_code').val(product.product_code);
-                    $('#sales_unit').val(product.unit.unit_name);
-                    $('#sales_price').val(product.sales_price);
-                    $('#purchase_price').val(product.purchase_price);
-                    $('#present_stock').val(present_stock);
-                    $('#productQuantity1').val(1);
-                    onChangeCalculateTotalAmount_2();
-                    setProductDetailToTable(data);
-                    // $('#quantityAmount').val(product.pack_size * product.sales_price);
-                    // product focus
-                    $('#change_product_2').focus();
-                }
-            },
-            error: function() {
-                console.error("Error fetching product details");
-            }
-        });
-    }
-
-    function setProductDetailToTable(details) {
-
-        // Get values for validation
-        var voucherDate = $('#voucher_date').val();
-        var customer = $('#changeCustomer').val();
-        var warehouseId = $('#warehouseId').val();
-
-        $('#product_id_2').val(details.id);
-        var product_id_2 = $('#product_id_2').val();
-    
-        var product_name = $('#product_name').val();
-        var sales_unit = $('#sales_unit').val();
-        var quantity = 1;
-        var sales_price = parseFloat($('#sales_price').val()) || 0;
-        var purchase_price = parseFloat($('#purchase_price').val()) || 0;
-        var discount = parseFloat($('#discount').val()) || 0;
-        var quantityAmount = parseFloat($('#quantityAmount').val()) || 0;
-        var totalAmount = parseFloat($('#netTotalAmount').val()) || 0;
-
-
-        // Validation checks using SweetAlert
-        if (!voucherDate) {
-            Swal.fire({
-                icon: 'error',
-                title: 'No Voucher Date Selected',
-                text: 'Please select a voucher date before adding a product.'
-            });
-        } else if (!customer) {
-            Swal.fire({
-                icon: 'error',
-                title: 'No Customer Selected',
-                text: 'Please select a customer before adding a product.'
-            });
-        } else if (!warehouseId) {
-            Swal.fire({
-                icon: 'error',
-                title: 'No Warehouse Selected',
-                text: 'Please select a warehouse before adding a product.'
-            });
-            // } else if (!product_id) {
-            //     Swal.fire({
-            //         icon: 'error',
-            //         title: 'No Product Selected',
-            //         text: 'Please select a product before adding it to the list.'
-            //     });
-            // } else if (!quantity || quantity <= 0) {
-            //     Swal.fire({
-            //         icon: 'error',
-            //         title: 'Invalid Quantity',
-            //         text: 'Please enter a valid product quantity before adding.'
-            //     });
-        } else {
-            // All fields are valid, proceed with adding the product logic
-            let duplicate_found = false;
-            let existingRow;
-
-            // Check for duplicate rows
-            $('#product_add tr').each(function() {
-                if ($(this).find('input[name="table_product_id[]"]').val() === product_id_2) {
-                    duplicate_found = true;
-                    existingRow = $(this);
-                    return false; // Break loop on finding a duplicate
-                }
-            });
-
-            if (duplicate_found) {
-                // Update the existing row
-                let oldQuantity = parseFloat(existingRow.find('.table_quantity').val()) || 0;
-                let newQuantity = oldQuantity + quantity;
-                let oldDiscount = parseFloat(existingRow.find('.table_discount').val()) || 0;
-                let newDiscount = oldDiscount + discount;
-                let oldAmount = parseFloat(existingRow.find('.cart_amount').text()) || 0;
-                let newAmount = oldAmount + (quantityAmount - discount);
-                newAmount = Math.round(newAmount);
-
-                // Update the row with the new data
-                existingRow.find('.table_quantity').val(newQuantity).next().val(newQuantity);
-                existingRow.find('.table_discount').val(newDiscount).next().val(newDiscount);
-                existingRow.find('.table_cart_amount').val(newAmount).next().val(newAmount);
-                // existingRow.find('.quantity_text').text(newQuantity);
-                existingRow.find('.discount_text').text(newDiscount);
-                existingRow.find('.cart_amount').text(newAmount);
-
-                // Update net total
-                let netTotal = totalAmount - oldAmount + newAmount;
-                $('#netTotalAmount').val(netTotal.toFixed(2));
-
-            } else {
-                // Add new product row if no duplicate
-                let totalAmountSum = quantityAmount;
-                let cartAmount = Math.round(totalAmountSum - discount);
-                let finalAmount = (totalAmount + cartAmount).toFixed(2);
-
-                $('#product_add').append(`
-                <tr class="each_row" data-id="${id}">
-                    <td class="text-center">${id} <input type="hidden" name="table_purchase_price[]" value="${purchase_price}"></td>
-                    <td class="text-center">${warehouseId}<input type="hidden" name="table_warehouse_id[]" value="${warehouseId}"></td>
-                    <td class="text-center">${product_id_2}</td>
-                    <td>${product_name}<input type="hidden" name="table_product_id[]" value="${product_id_2}"></td>
-                    <td class="text-center">${sales_unit}</td>
-                    <td class="text-end">
-                        <span class="quantity_text"></span>
-                        <input type="text" class="table_quantity" name="table_product_quantity[]" 
-                            oninput="this.value = this.value.replace(/[^0-9.]/g, '') 
-                                                .replace(/^0+(\d+\.?)/, '$1') 
-                                                .replace(/(\.\d{2})\d+/, '$1');" 
-                            onchange="if(this.value === '.' || this.value === '' || this.value === '0.') { this.value = ''; }"
-                            value="${quantity}">
-                    </td>
-                    <td class="text-end d-none">${sales_price}<input type="hidden" class="table_price" name="table_product_price[]" value="${sales_price}"></td>
-                    <td class="text-end d-none"><span class="discount_text">${discount}</span><input type="hidden" class="table_discount" name="table_product_discount[]" value="${discount}"></td>
-                    <td id="cart${id}" class="text-end d-none"><span class="cart_amount">${cartAmount}</span><input type="hidden" class="table_cart_amount" name="table_product_cart_amount[]" value="${cartAmount}"></td>
-                    <td class="text-center"><button type="button" data-id="${id}" class="add_product_delete btn btn-sm btn-danger py-1 px-3">X</button></td>
-                </tr>
-            `);
-                id++;
-                $('#netTotalAmount').val(finalAmount);
-            }
-
-            // Clear input fields after adding product
-            // resetFields_2();
-            $('#change_product_2').val('');
-
-
-        }
-        
-    }
-
-
-    function resetFields_2() {
-        $('#change_product_2').val('');
-        $('#product_id_2').val('');
-        $('#product_name').val('');
-        $('#sales_unit').val('');
-        $('#sales_price').val('');
-        $('#purchase_price').val('');
-        $('#present_stock').val('');
-        $('#productQuantity1').val('');
-        $('#quantityAmount').val('');
-        $('#discount').val('');
-        $('#percentageInput').val('');
-        $('#percentageType').val('1');
-        $('#percentageInputContainer').addClass('d-none');
-        $('#discount').prop('readonly', false);
-    }
-
-
 
     // Deleting product row logic
     $(document).on('click', '.add_product_delete', function() {
@@ -1330,7 +1014,6 @@ else {
 
     // -------------------------------- add to card end -----------------------------------------------------------
 
-
     // Event handler for changing the customer and updating customer details
     $('#changeCustomer').on('change', function() {
         let customerID = $(this).val();
@@ -1363,7 +1046,6 @@ else {
             $('#jsdataerror').text('Not Found');
         }
     });
-
 
     // Event handler for updating the return amount based on the given amount
     $('#givenAmount').on('keyup', function() {
@@ -1427,7 +1109,6 @@ else {
         });
 
     })
-
     // Event handler for when the chequeType = Cheque BankInfo Show
     $('#chequeType').on('change', function() {
         let chequeType = $(this).val();
@@ -1444,7 +1125,7 @@ else {
     if (sessionInvoice) {
         window.open("{{ route('sales_invoice_details_pdf', '') }}/" + sessionInvoice, '_blank');
     }
-    // if (sessionDeliveryChallan) {
-    //     window.open("{{ route('sales_challan_details_pdf', '') }}/" + sessionDeliveryChallan, '_blank');
-    // }
+    if (sessionDeliveryChallan) {
+        window.open("{{ route('sales_challan_details_pdf', '') }}/" + sessionDeliveryChallan, '_blank');
+    }
 </script>

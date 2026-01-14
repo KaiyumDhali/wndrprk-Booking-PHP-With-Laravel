@@ -2,7 +2,7 @@
     <table class="table">
         <tr>
             <td style="border: none; border-bottom: none; border-top: none;">
-                Design and Developed By: NRB Telecom Ltd.
+                Design and Developed By: NRB SOFTWARE.
             </td>
             <td style="border: none; border-bottom: none; border-top: none;">
                 @php

@@ -51,7 +51,7 @@
                 <div class="card-header align-items-center py-5 gap-2 gap-md-5">
                     <!--begin::Card title-->
                     <div class="card-title">
-                        <h3>Invoice Wise Sales Report</h3>
+                        <h3>Issue No Wise Consume Report</h3>
                     </div>
                     <!--begin::Card toolbar-->
                     <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
@@ -90,13 +90,13 @@
                             <!--begin::Table row-->
                             <tr class="text-start fs-7 text-uppercase gs-0">
                                 <th class="min-w-20px">SL</th>
-                                <th class="min-w-50px">Sales Date</th>
-                                <th class="min-w-50px">Invoice</th>
-                                <th class="min-w-50px">Customer Name</th>
-                                <th class="min-w-20px">Total Amount</th>
-                                <th class="min-w-20px">Discount</th>
-                                <th class="min-w-20px">Net Sales</th>
-                                <th class="min-w-300px text-end">Action</th>
+                                <th class="min-w-50px">Consume Date</th>
+                                <th class="min-w-50px">Issue No</th>
+                                <th class="min-w-50px">Employee Name</th>
+                                <th class="min-w-20px d-none">Product Name</th>
+                                <th class="min-w-20px d-none">Quantity</th>
+                                <th class="min-w-20px d-none">Net Sales</th>
+                                <th class="min-w-300px text-center">Action</th>
                             </tr>
                             <!--end::Table row-->
                         </thead>
@@ -130,7 +130,8 @@
             extend: 'collection',
             text: 'Export',
             className: 'btn btn-sm btn-light-primary',
-            buttons: [{
+            buttons: [
+                {
                     extend: 'excel',
                     text: 'Excel',
                     title: `${reportTittle}`,
@@ -162,10 +163,10 @@
                 }
             ]
         }],
-        columnDefs: [{
-            targets: -1, // Target the last column (Actions)
-            className: 'text-end', // Apply the text-end class for alignment
-        }],
+        columnDefs: [
+            { targets: -1, className: 'text-end' }, // Last column: Actions
+            { targets: [4, 5, 6], visible: false }  // Hide Product, Discount, Net Sales
+        ],
         paging: true,
         ordering: false,
         searching: true,
@@ -190,12 +191,11 @@
         let url;
         var startDate = $('#start_date').val();
         var endDate = $('#end_date').val();
-        url =
-            '{{ route('sales_invoice_date_search', ['startDate' => ':startDate', 'endDate' => ':endDate', 'pdf' => ':pdf']) }}';
+
+        url = '{{ route('sales_invoice_date_search', ['startDate' => ':startDate', 'endDate' => ':endDate', 'pdf' => ':pdf']) }}';
         url = url.replace(':startDate', startDate);
         url = url.replace(':endDate', endDate);
         url = url.replace(':pdf', pdfdata);
-        console.log(url);
 
         if (pdfdata == 'list') {
             $.ajax({
@@ -206,56 +206,29 @@
                 },
                 dataType: "json",
                 success: function(data) {
-                    console.log('invoice data:', data);
-
                     table.clear().draw();
+
                     if (data) {
                         $.each(data, function(key, value) {
-                            // let invoiceNo = value[0].invoice_no;
-                            // let stockDate = value[0].stock_date;
-                            // let customer = value[0].customer_id;
-                            // let totalAmount = value[0].customer_id;
-                            // let discountAmount = value[0].customer_id;
-                            // let payAmount = value[0].customer_id;
                             let invoiceNo = value.invoice_no;
                             let stockDate = value.stock_date;
-                            let customer = value.account_name;
+                            let customer = value.employee_name || 'N/A';
                             let totalAmount = value.total_amount;
-                            // let discountAmount = value.total_discount;
-                            let discountAmount = value.total_discount ? parseFloat(value
-                                .total_discount) : 0.00;
+                            let discountAmount = value.total_discount ? parseFloat(value.total_discount) : 0.00;
                             let salesAmount = parseFloat(totalAmount) + parseFloat(discountAmount);
                             salesAmount = salesAmount.toFixed(2);
 
-                            // Convert stockDate string to a JavaScript Date object
                             let dateObj = new Date(stockDate);
-                            // Format the date in AM/PM format
                             let formattedStockDate = formatDateAMPM(dateObj);
 
-                            // let dateObj = new Date(stockDate);
-                            // let formattedStockDate = dateObj.toISOString().split('T')[0];
-
-                            // URLs
-                            let returnUrl =
-                                `{{ route('sales_invoice_return', ['invoiceNo' => '_invoiceNo_']) }}`
-                                .replace('_invoiceNo_', invoiceNo);
-                            let editUrl =
-                                `{{ route('sales_invoice_edit', ['invoiceNo' => '_invoiceNo_']) }}`
-                                .replace('_invoiceNo_', invoiceNo);
-                            let showUrl =
-                                `{{ route('sales_invoice_details', ['invoiceNo' => '_invoiceNo_']) }}`
-                                .replace('_invoiceNo_', invoiceNo);
-                            let pdfUrl =
-                                `{{ route('sales_invoice_details_pdf', ['data' => '_invoiceNo_']) }}`
-                                .replace('_invoiceNo_', invoiceNo);
-
-                            // Determine buttons
+                            let returnUrl = `{{ route('sales_invoice_return', ['invoiceNo' => '_invoiceNo_']) }}`.replace('_invoiceNo_', invoiceNo);
+                            let editUrl = `{{ route('sales_invoice_edit', ['invoiceNo' => '_invoiceNo_']) }}`.replace('_invoiceNo_', invoiceNo);
+                            let showUrl = `{{ route('sales_invoice_details', ['invoiceNo' => '_invoiceNo_']) }}`.replace('_invoiceNo_', invoiceNo);
+                            let pdfUrl = `{{ route('sales_invoice_details_pdf', ['data' => '_invoiceNo_']) }}`.replace('_invoiceNo_', invoiceNo);
 
                             let buttons = `
                                 <td class="text-end">
-                                    <a href="${returnUrl}" class="btn btn-sm btn-warning hover-scale p-2 mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Return">
-                                        Return Invoice
-                                    </a>
+                                    
                                     <a href="${editUrl}" class="btn btn-sm btn-primary hover-scale p-2 mx-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                         Edit Invoice
                                     </a>
@@ -268,24 +241,25 @@
                                 </td>
                             `;
 
-                            // Add row to DataTable
                             let rowIndex = table.rows().count() + 1;
-                            table.row.add([rowIndex, formattedStockDate, invoiceNo, customer,
-                                formatCurrency(salesAmount), formatCurrency(discountAmount),
-                                formatCurrency(totalAmount), buttons
+                            table.row.add([
+                                rowIndex,
+                                formattedStockDate,
+                                invoiceNo,
+                                customer,
+                                formatCurrency(salesAmount),    // Hidden
+                                formatCurrency(discountAmount), // Hidden
+                                formatCurrency(totalAmount),    // Hidden
+                                buttons
                             ]).draw();
-                            // Reinitialize Bootstrap tooltips
+
                             $('[data-bs-toggle="tooltip"]').tooltip();
                         });
-
-                        // Enable DataTable buttons
-                        table.buttons().enable();
                     } else {
                         $('#jsdataerror').text('No records found');
-                        console.log('No records found');
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function(xhr) {
                     console.log(xhr.responseText);
                     $('#jsdataerror').text('Error occurred while fetching data');
                 }
@@ -296,12 +270,32 @@
             $('#jsdataerror').text('Please select a date');
         }
     }
+
     InvoiceList('list');
 
     $('#searchBtn').on('click', function() {
         InvoiceList("list");
     });
+
     $('#downloadPdf').on('click', function() {
         InvoiceList('pdfurl');
     });
+
+    // Helper functions (assumed already defined)
+    function formatCurrency(value) {
+        return parseFloat(value).toFixed(2);
+    }
+
+    function formatDateAMPM(date) {
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        };
+        return new Intl.DateTimeFormat('en-US', options).format(date);
+    }
 </script>
+

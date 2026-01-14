@@ -28,19 +28,19 @@
                                         <!--begin::Card header-->
                                         <div class="card-header">
                                             <div class="card-title">
-                                                <h2>Customer Details </h2>
+                                                <h2>Employee Details </h2>
                                             </div>
                                         </div>
                                         <!--end::Card header-->
                                         <!--begin::Card body-->
                                         <div class="card-body py-0 pt-2">
                                             <b>
-                                                Customer ID : {{ $stocks[0]->customer_finance_account->id }}
-                                                <br>Name : {{ $stocks[0]->customer_finance_account->account_name }}
+                                                Employee ID : {{ $stocks[0]->customer_id }}
+                                                <br>Name : {{ $stocks[0]->employee_finance_account->employee_name }}
                                                 <br>Address :
-                                                {{ $stocks[0]->customer_finance_account->account_address }}
+                                                {{ $stocks[0]->employee_finance_account->present_address }}
                                                 <br>Mobile No :
-                                                {{ $stocks[0]->customer_finance_account->account_mobile }}
+                                                {{ $stocks[0]->employee_finance_account->mobile }}
 
                                             </b>
                                         </div>
@@ -57,9 +57,9 @@
                                             <a href="{{ route('sales_invoice_details_pdf', $stocks[0]->invoice_no) }}"
                                                 class="btn btn-sm btn-primary px-5 my-3"
                                                 target="_blank">{{ __('PDF Download') }}</a>
-                                            <h5> Invoice No (#{{ $stocks[0]->invoice_no }}) </h5>
-                                            <h5> Delivery Challan No (#{{ $stocks[0]->delivery_challan_no }}) </h5>
-                                            <h5>Invoice Date : {{ $stocks[0]->stock_date }}</h5>
+                                            <h5> Issue No (#{{ $stocks[0]->invoice_no }}) </h5>
+                                            <h5 class="d-none"> Delivery Challan No (#{{ $stocks[0]->delivery_challan_no }}) </h5>
+                                            <h5>Issue Date : {{ \Carbon\Carbon::parse($stocks[0]->stock_date)->format('Y-m-d') }}</h5>
                                             @if ($productServiceDetail)
                                                 <h5>Service Product : {{ $productServiceDetail->product_name }}</h5>
                                                 <h5>Service Location : {{ $productServiceDetail->service_location }}
@@ -86,9 +86,9 @@
                                                         <th class="min-w-175px">Product Name</th>
                                                         <th class="min-w-70px">Unit</th>
                                                         <th class="min-w-70px">Quantity</th>
-                                                        <th class="min-w-100px">Unit Price</th>
-                                                        <th class="min-w-100px">Discount</th>
-                                                        <th class="min-w-100px">Total (BDT)</th>
+                                                        <th class="min-w-100px d-none">Unit Price</th>
+                                                        <th class="min-w-100px d-none">Discount</th>
+                                                        <th class="min-w-100px d-none">Total (BDT)</th>
                                                     </tr>
                                                 </thead>
                                                 <!--end::Table head-->
@@ -106,11 +106,11 @@
                                                             <td class="text-center">
                                                                 {{ $stock->product->unit->unit_name }}</td>
                                                             <td class="">{{ $stock->stock_out_quantity }}</td>
-                                                            <td class="text-end">
+                                                            <td class="text-end d-none">
                                                                 {{ formatCurrency($stock->stock_out_unit_price) }}</td>
-                                                            <td class="text-end">
+                                                            <td class="text-end d-none">
                                                                 {{ formatCurrency($stock->stock_out_discount) }}</td>
-                                                            <td class="text-end">
+                                                            <td class="text-end d-none">
                                                                 {{ formatCurrency($productTotal = $stock->stock_out_total_amount) }}
                                                             </td>
                                                             <span
@@ -119,7 +119,7 @@
                                                     @endforeach
                                                     <!--end::Products-->
                                                     <!--begin::Subtotal-->
-                                                    <tr class="">
+                                                    <tr class="d-none">
                                                         <td colspan="7" class="fs-5 text-dark text-end ">Subtotal
                                                         </td>
                                                         <td colspan="7" class="fs-5 text-dark text-end">
@@ -127,31 +127,31 @@
                                                     </tr>
                                                     <!--end::Subtotal-->
                                                     <!--begin::VAT-->
-                                                    {{-- <tr>
+                                                    {{-- <tr class="d-none">
                                                 <td colspan="7" class="fs-5 text-dark text-end">Discount</td>
                                                 <td colspan="7" class="fs-5 text-dark text-end">
                                                         {{ formatCurrency($initialDiscount) }}</td>
                                             </tr> --}}
-                                                    <tr>
+                                                    <tr class="d-none">
                                                         <td colspan="7" class="fs-5 text-dark text-end">INV Discount
                                                         </td>
                                                         <td colspan="7" class="fs-5 text-dark text-end">0.00</td>
                                                     </tr>
                                                     <!--end::VAT-->
                                                     <!--begin::Grand total-->
-                                                    <tr>
+                                                    <tr class="d-none">
                                                         <td colspan="7" class="fs-4 text-dark text-end">Net Amount
                                                         </td>
                                                         <td colspan="7" class="text-dark fs-4 fw-bolder text-end">
                                                             {{ formatCurrency($initialTotal) }}</td>
                                                     </tr>
-                                                    <tr>
+                                                    <tr class="d-none">
                                                         <td colspan="7" class="fs-4 text-dark text-end">Paid Amount
                                                         </td>
                                                         <td colspan="7" class="text-dark fs-4 fw-bolder text-end">
                                                             {{ formatCurrency($customerPayment) }}</td>
                                                     </tr>
-                                                    <tr>
+                                                    <tr class="d-none">
                                                         <td colspan="7" class="fs-4 text-dark text-end">Due Amount
                                                         </td>
                                                         <td colspan="7" class="text-dark fs-4 fw-bolder text-end">
@@ -165,9 +165,9 @@
                                             <!--end::Table-->
                                         </div>
                                         <div class="pt-5 mt-5" style="font-size: 16px">
-                                            <p><b>In Word:</b> {{ numberToWord($initialTotal) }}</p>
+                                            <p class="d-none"><b>In Word:</b> {{ numberToWord($initialTotal) }}</p>
                                             @if ($customerPayment)
-                                                <p><b>Narration:</b> {{ $paymentNarration }}</p>
+                                                <p class="d-none"><b>Narration:</b> {{ $paymentNarration }}</p>
                                             @else
                                                 @if ($stock->remarks)
                                                     <p><b>Remarks:</b> {{ $stock->remarks }}</p>

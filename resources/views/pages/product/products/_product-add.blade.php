@@ -40,7 +40,7 @@
                         <div class="col-12 col-md-3 me-lg-10">
                             <!--begin::Status-->
                             <div class="card card-flush py-4">
-                                <div class="card-body pt-0 pb-2 d-flex align-items-center">
+                                <!-- <div class="card-body pt-0 pb-2 d-flex align-items-center">
                                     <div class="flex-grow-1">
                                         <label class="required form-label">Product Type</label>
                                         <select class="form-select form-select-sm" data-control="select2" name="type_id" required>
@@ -54,7 +54,10 @@
                                         data-bs-toggle="modal" data-bs-target="#add_type">
                                         Add
                                     </a>
-                                </div>
+                                </div> -->
+
+                                <input type="hidden" name="type_id" value="1" data-control="select2">
+
 
                                 <div class="card-body pt-0 pb-2 d-flex align-items-center">
                                     <div class="flex-grow-1">

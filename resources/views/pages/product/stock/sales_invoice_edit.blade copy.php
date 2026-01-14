@@ -19,20 +19,15 @@
                 </ul>
             </div>
         @endif
-
-          <form class="px-0" id="salesform" method="POST"
-                        action="{{ route('sales_invoice_update', $invoiceNo) }}" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
         <div class="row ">
             <!-- Product Add to card Content Row -->
-            <div class="col-md-12">
-                <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="row">
                     {{-- select product --}}
-                    <div class="col-md-10 card shadow">
+                    <div class="col-md-12 card shadow">
                         <div class="card-header px-2 mx-0">
                             <div class="d-sm-flex align-items-center justify-content-between">
-                                <h1 class="h3 mb-0 text-gray-800">{{ __('Consume Update') }}</h1>
+                                <h1 class="h3 mb-0 text-gray-800">{{ __('Sales Update') }}</h1>
                             </div>
                         </div>
                         <div class="card-body py-3 px-2 mx-0">
@@ -51,26 +46,6 @@
                                             @endforeach
                                         </select>
                                     </div>
-
-                                      <div class="card-body col-md-6 px-0 pt-0 pb-2 d-flex align-items-center">
-                                            <div class="flex-grow-1 pt-2">
-                                                <label>{{ __('Select Employee') }}</label>
-                                                <select id="changeCustomer" class="form-control form-control-sm" name="customer_id"
-                                                    data-control="select2" data-placeholder="Select Customer" required>
-                                                    <option></option>
-                                                    @foreach ($customerAccounts as $customerAccount)
-                                                        <option value="{{ $customerAccount->id }}"
-                                                            @if ($customerAccount->id == $stocks[0]->customer_id) selected @endif>
-                                                            {{ $customerAccount->employee_name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <a href="#" class="btn btn-sm btn-flex btn-light-primary ms-2 mt-8"
-                                                data-bs-toggle="modal" data-bs-target="#add_customer_modal">
-                                                Add
-                                            </a>
-                                        </div>
                                     <div class="form-group col-md-6 my-3">
                                         <label>{{ __('Select Product') }}</label>
                                         <select id="changeProduct" class="form-select form-select-sm" name="product_id"
@@ -84,8 +59,10 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                </div>
 
-                                     <div class="form-group col-md-4 my-3">
+                                <div class="row">
+                                    <div class="form-group col-md-4 my-3">
                                         <label for="order">{{ __('Product Name') }}</label>
                                         <input type="text" class="form-control form-control-sm form-control-solid"
                                             readonly id="product_name" name="product_name " />
@@ -95,16 +72,12 @@
                                         <input type="text" class="form-control form-control-sm form-control-solid"
                                             readonly id="product_code" name="product_code " />
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                   
                                     <div class="form-group col-md-2 my-3">
                                         <label for="order">{{ __('Unit Name') }}</label>
                                         <input type="text" class="form-control form-control-sm form-control-solid"
                                             readonly id="sales_unit" name="sales_unit " />
                                     </div>
-                                    <div class="form-group col-md-2 my-3 d-none">
+                                    <div class="form-group col-md-2 my-3">
                                         <label for="order">{{ __('Price (Per Unit)') }}</label>
                                         <input type="text" class="form-control form-control-sm" id="sales_price"
                                             name="sales_price"
@@ -121,13 +94,13 @@
                                             name="quantity"
                                             oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                     </div>
-                                    <div class="form-group col-md-2 my-3 d-none">
+                                    <div class="form-group col-md-2 my-3">
                                         <label for="order">{{ __('Amount') }}</label>
                                         <input type="text" class="form-control form-control-sm form-control-solid"
                                             id="quantityAmount" name="Amount" value=0 readonly />
                                     </div>
 
-                                    <div class="form-group col-md-2 my-3 d-none">
+                                    <div class="form-group col-md-2 my-3">
                                         <label class="">Discount Type</label>
                                         <select class="form-select form-select-sm" data-control="select2" name="type" id="percentageType">
                                             <option value="">--Select Type--</option>
@@ -143,23 +116,26 @@
                                             oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                     </div>
 
-                                    <div class="form-group col-md-2 my-3 d-none" id="amountInputContainer">
+                                    <div class="form-group col-md-2 my-3" id="amountInputContainer">
                                         <label class=""><span>Discount </span> </label>
                                         <input type="text" class="form-control form-control-sm" id="discount"
                                             name="discount"
                                             oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                     </div>
-                                     <div class="form-group col-md-6 my-3 text-end">
-                                            <button type="button" id="addProduct"
-                                                class="btn btn-sm btn-primary px-5 mt-6">{{ __('Add to Cart') }}</button>
-                                        </div>
+                                    <div class="form-group col-md-2 my-3">
+                                        <button type="button" id="addProduct"
+                                            class="btn btn-sm btn-primary px-5 mt-6">{{ __('Add to Cart') }}</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                  
+                    <form class="px-0" id="salesform" method="POST"
+                        action="{{ route('sales_invoice_update', $invoiceNo) }}" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
                         {{-- add to product --}}
-                        <div class="col-10 card shadow my-5 px-5">
+                        <div class="col-12 card shadow my-5 px-5">
                             <div id="cart_product">
                                 <table id="product_add" class="table table-bordered mt-4">
                                     <tr class="text-center">
@@ -167,34 +143,20 @@
                                         <th>Product Name</th>
                                         <th>Unit</th>
                                         <th class="w-100px">Quantity</th>
-                                        <th class="d-none">sales Price</th>
-                                        <th class="d-none">Discount</th>
-                                        <th class="d-none">Amount</th>
-                                        <th>Action</th>
+                                        <th>sales Price</th>
+                                        <th>Discount</th>
+                                        <th>Amount</th>
+                                        <th></th>
                                     </tr>
                                 </table>
                             </div>
-                            <div class="row">
-                                <div class="form-group col-md-6 ms-auto">
-                        <label for="remarks">{{ __('Remarks') }}</label>
-                        <input type="text" class="form-control form-control-sm" id="remarks" name="remarks"
-                            value="{{ $stocks[0]->remarks }}" />
-                    </div>
-                    </div>
-                                <div class="row">
-                                <div class="col text-end">
-                                <button type="submit" id="submitBtn"
-                                class="btn btn-sm btn-success px-5 mt-5 mb-5">{{ __('Consume update') }}</button>
-                                </div>
-                                </div>
-                            
                         </div>
                 </div>
             </div>
             {{-- @foreach ($collection as $item)
             @endforeach --}}
             <!--  sales Summary Content Row -->
-            <div class="col-md-4 d-none">
+            <div class="col-md-4">
                 <div class="card shadow px-10 pb-8 ms-0 ms-md-5">
                     <div class="card-header my-3 mx-0 px-2">
                         <div class="d-sm-flex align-items-center justify-content-between">
@@ -217,7 +179,25 @@
                         <input type="date" class="form-control form-control-sm form-control-solid"
                             id="voucher_date" name="voucher_date" value="{{ $customerFinance->voucher_date }}" />
                     </div>
-                  
+                    <div class="card-body px-0 pt-0 pb-2 d-flex align-items-center">
+                        <div class="flex-grow-1 pt-2">
+                            <label>{{ __('Select Customer') }}</label>
+                            <select id="changeCustomer" class="form-control form-control-sm" name="customer_id"
+                                data-control="select2" data-placeholder="Select Customer" required>
+                                <option></option>
+                                @foreach ($customerAccounts as $customerAccount)
+                                    <option value="{{ $customerAccount->id }}"
+                                        @if ($customerAccount->id == $stocks[0]->customer_id) selected @endif>
+                                        {{ $customerAccount->account_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-flex btn-light-primary ms-2 mt-8"
+                            data-bs-toggle="modal" data-bs-target="#add_customer_modal">
+                            Add
+                        </a>
+                    </div>
 
                     <div class="card p-5 mb-4 d-none" id="customerInfo">
                         <label for="" id="customerAdd4"></label>
@@ -251,7 +231,13 @@
                         <input type="number" class="form-control form-control-sm form-control-solid"
                             id="returnAmount" name="returnAmount" value="0" readonly />
                     </div>
-                    
+                    <div class="form-group">
+                        <label for="remarks">{{ __('Remarks') }}</label>
+                        <input type="text" class="form-control form-control-sm" id="remarks" name="remarks"
+                            value="{{ $stocks[0]->remarks }}" />
+                    </div>
+                    <button type="submit" id="submitBtn"
+                        class="btn btn-sm btn-success px-5 mt-5">{{ __('Sales update') }}</button>
                 </div>
             </div>
             </form>
@@ -674,19 +660,16 @@
             product.product_id + ` ><input type="hidden" name="warehouse_id[]" value=` +
             product.warehouse_id + ` ></td>
                 <td class="text-center">` + product.sales_unit + `</td>
-                <td class="text-center">
-                <input type="text" class="form-control table_quantity py-0 my-0 text-end"
-                        name="table_product_quantity[]"
-                        step="1" min="0"
-                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                        value="` + product.quantity + `">
+                <td>` + product.quantity + `
+                    <input type="hidden" class="form-control table_quantity py-0 my-0 text-end" name="table_product_quantity[]" 
+                    step="1" min="0" oninput="this.value = this.value.replace(/\D/g, '');" 
+                    value="` + product.quantity + `">
                 </td>
-
-                <td class="text-end d-none">` + product.sales_price +
+                <td class="text-end">` + product.sales_price +
             `<input type="hidden" name="table_product_price[]" value=` + product.sales_price + ` ></td>
-                <td class="text-end d-none">` + product.discount +
+                <td class="text-end">` + product.discount +
             `<input type="hidden" name="table_product_discount[]" value=` + product.discount + ` ></td>
-                <td id="cart${id}" class="text-end d-none"><span class="cart_amount">${cartAmount}</span><input type="hidden" class="table_cart_amount" name="table_product_cart_amount[]" value="${cartAmount}"></td>
+                <td id="cart${id}" class="text-end"><span class="cart_amount">${cartAmount}</span><input type="hidden" class="table_cart_amount" name="table_product_cart_amount[]" value="${cartAmount}"></td>
                 <td class="text-center my-0"> 
                     <button type="button" data-id="${id}" class="add_product_delete btn btn-sm btn-danger py-1 px-3">X</button>
                 </td>
@@ -881,7 +864,7 @@
     if (sessionInvoice) {
         window.open("{{ route('sales_invoice_details_pdf', '') }}/" + sessionInvoice, '_blank');
     }
-    // if (sessionDeliveryChallan) {
-    //     window.open("{{ route('sales_challan_details_pdf', '') }}/" + sessionDeliveryChallan, '_blank');
-    // }
+    if (sessionDeliveryChallan) {
+        window.open("{{ route('sales_challan_details_pdf', '') }}/" + sessionDeliveryChallan, '_blank');
+    }
 </script>
